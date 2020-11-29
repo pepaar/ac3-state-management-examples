@@ -2,7 +2,7 @@ import React from "react";
 import { visibilityFilterVar } from "../cache";
 import TodoList from "../components/TodoList";
 import { VisibilityFilter, VisibilityFilters } from "../models/VisibilityFilter";
-import { Todos } from "../models/Todos";
+import { Todo, Todos } from "../models/Todos";
 import { useQuery } from "@apollo/client";
 import { GetAllTodos } from "../operations/queries/__generated__/GetAllTodos";
 import { GET_ALL_TODOS } from "../operations/queries/getAllTodos";
@@ -41,7 +41,19 @@ export default function VisibleTodoList() {
       filteredTodos={filteredTodos}
       actions={{
         completeTodo: (id: number) => completeTodo({ variables: { id } }),
-        deleteTodo: (id: number) => deleteTodo({ variables: { id } }),
+        deleteTodo: (todo: Todo) =>
+          deleteTodo({
+            variables: { id: todo.id },
+            // Example of optimistic response
+            optimisticResponse: {
+              deleteTodo: {
+                __typename: "DeleteTodoResult",
+                todo: { ...todo },
+                success: true,
+                error: null,
+              },
+            },
+          }),
         editTodo: (id: number, text: string, listId?: string) => editTodo({ variables: { id, text, listId } }),
       }}
     />

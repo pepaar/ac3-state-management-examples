@@ -6,6 +6,7 @@ import { GET_ALL_TODOS } from "../operations/queries/getAllTodos";
 import { useCompleteTodo } from "../operations/mutations/completeTodo";
 import { useDeleteTodo } from "../operations/mutations/deleteTodo";
 import { useEditTodo } from "../operations/mutations/editTodo";
+import { Todo } from "../models/Todos";
 
 export default function AlternativeList() {
   const { mutate: completeTodo } = useCompleteTodo();
@@ -25,7 +26,7 @@ export default function AlternativeList() {
         filteredTodos={data.todos}
         actions={{
           completeTodo: (id: number) => completeTodo({ variables: { id } }),
-          deleteTodo: (id: number) => deleteTodo({ variables: { id } }),
+          deleteTodo: (todo: Todo) => deleteTodo({ variables: { id: todo.id } }),
           editTodo: (id: number, text: string) => editTodo({ variables: { id, text } }),
         }}
       />

@@ -35,7 +35,7 @@ export function useDeleteTodo() {
         },
       });
 
-      cache.evict({ id: `Todo:${deletedId}` });
+      // You could also remove the item from the important list as well
     },
   });
 

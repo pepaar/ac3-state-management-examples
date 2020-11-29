@@ -58,7 +58,7 @@ export default class TodoItem extends Component<Props, Props> {
               Important
             </button>
           )}
-          <button className="destroy" onClick={() => deleteTodo(todo.id)} />
+          <button className="destroy" onClick={() => deleteTodo(todo)} />
         </div>
       );
     }
