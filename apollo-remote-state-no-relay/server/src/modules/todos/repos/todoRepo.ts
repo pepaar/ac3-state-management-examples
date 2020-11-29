@@ -1,14 +1,13 @@
-
 import { Todo } from "../../../generated/graphql";
 
 export interface TodoRepo {
   addTodo(text: string): Promise<void>;
-  completeTodo (id: number): Promise<void>;
+  completeTodo(id: number): Promise<void>;
   clearCompletedTodos(): Promise<void>;
-  completeAllTodos (): Promise<void>;
+  completeAllTodos(): Promise<void>;
   deleteTodo(id: number): Promise<void>;
-  editTodo(id: number, text: string): Promise<void>;
-  getAllTodos (): Promise<Todo[]>;
-  getTodoById (id: number): Promise<Todo>;
-  getLastTodo (): Promise<Todo>;
+  editTodo(id: number, text: string, listId?: string): Promise<void>;
+  getAllTodos(): Promise<Todo[]>;
+  getTodoById(id: number): Promise<Todo>;
+  getLastTodo(): Promise<Todo>;
 }

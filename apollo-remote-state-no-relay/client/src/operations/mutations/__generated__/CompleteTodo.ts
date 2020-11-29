@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 // ====================================================
@@ -11,6 +12,7 @@ export interface CompleteTodo_completeTodo_todo {
   id: number;
   text: string;
   completed: boolean;
+  listId: string | null;
 }
 
 export interface CompleteTodo_completeTodo_error_TodoNotFoundError {

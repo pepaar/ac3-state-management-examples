@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @generated
 // This file was automatically generated and should not be edited.
 
 // ====================================================
@@ -11,6 +12,7 @@ export interface EditTodo_editTodo_todo {
   id: number;
   text: string;
   completed: boolean;
+  listId: string | null;
 }
 
 export interface EditTodo_editTodo_error_TodoNotFoundError {
@@ -39,4 +41,5 @@ export interface EditTodo {
 export interface EditTodoVariables {
   id: number;
   text: string;
+  listId?: string | null;
 }

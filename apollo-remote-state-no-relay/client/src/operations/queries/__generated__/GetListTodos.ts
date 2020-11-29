@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetAllTodos
+// GraphQL query operation: GetListTodos
 // ====================================================
 
-export interface GetAllTodos_todos {
+export interface GetListTodos_todos {
   __typename: "Todo";
   id: number;
   text: string;
@@ -15,6 +15,6 @@ export interface GetAllTodos_todos {
   listId: string | null;
 }
 
-export interface GetAllTodos {
-  todos: GetAllTodos_todos[];
+export interface GetListTodos {
+  todos: GetListTodos_todos[];
 }

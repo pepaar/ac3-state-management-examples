@@ -90,6 +90,7 @@ export type MutationDeleteTodoArgs = {
 export type MutationEditTodoArgs = {
   id: Scalars['Int'];
   text: Scalars['String'];
+  listId?: Maybe<Scalars['String']>;
 };
 
 export type PageInfo = {
@@ -102,7 +103,7 @@ export type PageInfo = {
 
 export type Query = {
    __typename?: 'Query';
-  todos: Array<Maybe<Todo>>;
+  todos: Array<Todo>;
   todo: TodoResult;
 };
 
@@ -112,6 +113,7 @@ export type QueryTodosArgs = {
   before?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
+  listId?: Maybe<Scalars['String']>;
 };
 
 
@@ -124,6 +126,7 @@ export type Todo = {
   id: Scalars['Int'];
   text: Scalars['String'];
   completed: Scalars['Boolean'];
+  listId?: Maybe<Scalars['String']>;
 };
 
 export type TodoAlreadyCompletedError = {
@@ -331,7 +334,7 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  todos?: Resolver<Array<Maybe<ResolversTypes['Todo']>>, ParentType, ContextType, RequireFields<QueryTodosArgs, never>>,
+  todos?: Resolver<Array<ResolversTypes['Todo']>, ParentType, ContextType, RequireFields<QueryTodosArgs, never>>,
   todo?: Resolver<ResolversTypes['TodoResult'], ParentType, ContextType, RequireFields<QueryTodoArgs, 'id'>>,
 };
 
@@ -339,6 +342,7 @@ export type TodoResolvers<ContextType = any, ParentType extends ResolversParentT
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   completed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  listId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 

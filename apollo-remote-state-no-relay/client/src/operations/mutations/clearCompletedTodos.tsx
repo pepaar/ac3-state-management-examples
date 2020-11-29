@@ -1,7 +1,6 @@
-
 import { gql, useMutation } from "@apollo/client";
-import * as ClearCompletedTodosTypes from './__generated__/ClearCompletedTodos'
-import * as GetAllTodosTypes from '../queries/__generated__/GetAllTodos'
+import * as ClearCompletedTodosTypes from "./__generated__/ClearCompletedTodos";
+import * as GetAllTodosTypes from "../queries/__generated__/GetAllTodos";
 import { GET_ALL_TODOS } from "../queries/getAllTodos";
 
 export const CLEAR_COMPLETED_TODOS = gql`
@@ -9,35 +8,33 @@ export const CLEAR_COMPLETED_TODOS = gql`
     clearCompletedTodos {
       success
       todos {
-        id 
+        id
         text
         completed
+        listId
       }
     }
   }
-`
+`;
 
-export function useClearCompletedTodos () {
-  const [mutate, { data, error }] = useMutation<
-    ClearCompletedTodosTypes.ClearCompletedTodos
-  >(
-    CLEAR_COMPLETED_TODOS,
-    {
-      refetchQueries: [{
-        query: GET_ALL_TODOS
-      }],
-      update (cache) {
-        const result = cache.readQuery<GetAllTodosTypes.GetAllTodos>({
-          query: GET_ALL_TODOS
-        });
-        const todosToDelete = result?.todos;
+export function useClearCompletedTodos() {
+  const [mutate, { data, error }] = useMutation<ClearCompletedTodosTypes.ClearCompletedTodos>(CLEAR_COMPLETED_TODOS, {
+    refetchQueries: [
+      {
+        query: GET_ALL_TODOS,
+      },
+    ],
+    update(cache) {
+      const result = cache.readQuery<GetAllTodosTypes.GetAllTodos>({
+        query: GET_ALL_TODOS,
+      });
+      const todosToDelete = result?.todos;
 
-        todosToDelete?.forEach((todo) => {
-          cache.evict({ id: `Todo:${todo?.id}` })
-        })
-      }
-    }
-  )
+      todosToDelete?.forEach((todo) => {
+        cache.evict({ id: `Todo:${todo?.id}` });
+      });
+    },
+  });
 
   return { mutate, data, error };
 }

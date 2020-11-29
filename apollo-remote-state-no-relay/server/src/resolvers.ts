@@ -8,11 +8,11 @@ import {
   ClearCompletedTodosResult,
   CompleteAllTodosResult,
   DeleteTodoResult,
-  EditTodoResult
+  EditTodoResult,
 } from "./generated/graphql";
 import { PaginationUtils } from "./shared/utils/paginationUtils";
 import { TodoMapper } from "./shared/mappers/todoMapper";
-import { Context } from './index'
+import { Context } from "./index";
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -21,92 +21,94 @@ const resolvers: Resolvers = {
       try {
         await todosRepo.addTodo(text);
         const todo = await todosRepo.getLastTodo();
-        return { success: true, todo }
+        return { success: true, todo };
       } catch (err) {
-        return { success: false, error: { message: 'Todo must be greater than 3 chars' } }
+        return { success: false, error: { message: "Todo must be greater than 3 chars" } };
       }
     },
     completeTodo: async (_, { id }, context: Context): Promise<CompleteTodoResult> => {
       const { todosRepo } = context;
-      let todo; 
+      let todo;
 
       try {
         todo = await todosRepo.getTodoById(id);
       } catch (err) {
-        return { success: false, error: { message: 'Todo not found' } }
+        return { success: false, error: { message: "Todo not found" } };
       }
-      
+
       if (todo.completed) {
-        return { success: false, error: { message: 'Already completed this todo!' }}
+        return { success: false, error: { message: "Already completed this todo!" } };
       }
 
       await todosRepo.completeTodo(id);
-      todo = await todosRepo.getTodoById(id)
+      todo = await todosRepo.getTodoById(id);
 
-      return { success: true, todo }
+      return { success: true, todo };
     },
     clearCompletedTodos: async (_, __, context: Context): Promise<ClearCompletedTodosResult> => {
       const { todosRepo } = context;
       await todosRepo.clearCompletedTodos();
       const todos = await todosRepo.getAllTodos();
-      return { success: true, todos }
+      return { success: true, todos };
     },
     completeAllTodos: async (_, __, context: Context): Promise<CompleteAllTodosResult> => {
       const { todosRepo } = context;
       await todosRepo.completeAllTodos();
       const todos = await todosRepo.getAllTodos();
-      return { success: true, todos }
+      return { success: true, todos };
     },
     deleteTodo: async (_, { id }, context: Context): Promise<DeleteTodoResult> => {
       const { todosRepo } = context;
-      let todo; 
+      let todo;
 
       try {
         todo = await todosRepo.getTodoById(id);
       } catch (err) {
-        return { success: false, error: { message: 'Todo not found' } }
+        return { success: false, error: { message: "Todo not found" } };
       }
 
       await todosRepo.deleteTodo(id);
       return { success: true, todo };
     },
-    editTodo: async (_, { id, text }, context: Context): Promise<EditTodoResult> => {
+    editTodo: async (_, { id, text, listId }, context: Context): Promise<EditTodoResult> => {
       const { todosRepo } = context;
-      let todo; 
+      let todo;
 
       try {
         todo = await todosRepo.getTodoById(id);
       } catch (err) {
-        return { success: false, error: { message: 'Todo not found' } }
+        return { success: false, error: { message: "Todo not found" } };
       }
 
       try {
-        await todosRepo.editTodo(id, text)
+        await todosRepo.editTodo(id, text, listId);
       } catch (err) {
-        return { success: false, error: { message: 'Todo must be greater than 3 chars' } }
+        return { success: false, error: { message: "Todo must be greater than 3 chars" } };
       }
 
       todo = await todosRepo.getTodoById(id);
-      return { success: true, todo }
-    }
+      return { success: true, todo };
+    },
   },
   Query: {
-    todos: async (_, { after, before, first, last }, context: Context): Promise<TodosConnection> => {
+    todos: async (_, { after, before, first, last, listId }, context: Context): Promise<TodosConnection> => {
       const { todosRepo } = context;
       const todos = await todosRepo.getAllTodos();
 
       let queryTodos: Todo[] = [];
-      const limitResult = PaginationUtils
-        .limitByFirstAndLast(todos, first, last);
-      
+      const limitResult = PaginationUtils.limitByFirstAndLast(todos, first, last);
+
       if (limitResult.isFailure) {
         throw new Error(limitResult.error as string);
       } else {
         queryTodos = limitResult.getValue();
       }
 
-      queryTodos = PaginationUtils
-        .filterByBeforeAndAfter(queryTodos, after, before) as Todo[];
+      queryTodos = PaginationUtils.filterByBeforeAndAfter(queryTodos, after, before) as Todo[];
+
+      if (listId) {
+        return queryTodos.filter((todo) => todo.listId === listId);
+      }
 
       return queryTodos;
     },
@@ -116,8 +118,8 @@ const resolvers: Resolvers = {
         const todo = await todosRepo.getTodoById(id);
         return todo;
       } catch (err) {
-        return { message: `Todo with id ${id} not found.` }
-      } 
+        return { message: `Todo with id ${id} not found.` };
+      }
     },
   },
 
@@ -131,39 +133,36 @@ const resolvers: Resolvers = {
    */
 
   TodoResult: {
-    __resolveType (obj) {
-
-      if(obj.hasOwnProperty('id')){
-        return 'Todo';
+    __resolveType(obj) {
+      if (obj.hasOwnProperty("id")) {
+        return "Todo";
       }
 
-      if(obj.hasOwnProperty('message')){
-        return 'TodoNotFoundError';
+      if (obj.hasOwnProperty("message")) {
+        return "TodoNotFoundError";
       }
 
       return null;
     },
   },
   CompleteTodoError: {
-    __resolveType (obj) {
-
-      if(obj.message === 'Already completed this todo!'){
-        return 'TodoAlreadyCompletedError';
+    __resolveType(obj) {
+      if (obj.message === "Already completed this todo!") {
+        return "TodoAlreadyCompletedError";
       }
 
-      return 'TodoNotFoundError'
-
+      return "TodoNotFoundError";
     },
   },
   EditTodoError: {
-    __resolveType (obj) {
-      if(obj.message === 'Todo must be greater than 3 chars'){
-        return 'TodoValidationError';
+    __resolveType(obj) {
+      if (obj.message === "Todo must be greater than 3 chars") {
+        return "TodoValidationError";
       }
 
-      return 'TodoNotFoundError'
-    }
-  }
+      return "TodoNotFoundError";
+    },
+  },
 };
 
 export { resolvers };

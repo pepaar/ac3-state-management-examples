@@ -10,8 +10,9 @@ const typeDefs = gql`
 
   type Todo {
     id: Int!
-    text: String! 
+    text: String!
     completed: Boolean!
+    listId: String
   }
 
   type TodoNotFoundError {
@@ -21,14 +22,9 @@ const typeDefs = gql`
   union TodoResult = Todo | TodoNotFoundError
 
   type Query {
-    todos (
-      after: String, 
-      before: String, 
-      first: Int, 
-      last: Int
-    ): [Todo]!
+    todos(after: String, before: String, first: Int, last: Int, listId: String): [Todo!]!
 
-    todo (id: Int!): TodoResult!
+    todo(id: Int!): TodoResult!
   }
 
   type TodoAlreadyCompletedError {
@@ -73,18 +69,18 @@ const typeDefs = gql`
 
   type EditTodoResult {
     success: Boolean!
-    todo: Todo 
+    todo: Todo
     error: EditTodoError
   }
 
   type Mutation {
-    addTodo (text: String!): AddTodoResult!
+    addTodo(text: String!): AddTodoResult!
     clearCompletedTodos: ClearCompletedTodosResult!
-    completeTodo (id: Int!): CompleteTodoResult!
+    completeTodo(id: Int!): CompleteTodoResult!
     completeAllTodos: CompleteAllTodosResult!
-    deleteTodo (id: Int!): DeleteTodoResult!
-    editTodo (id: Int!, text: String!): EditTodoResult!
+    deleteTodo(id: Int!): DeleteTodoResult!
+    editTodo(id: Int!, text: String!, listId: String): EditTodoResult!
   }
-`
+`;
 
-export { typeDefs }
+export { typeDefs };
