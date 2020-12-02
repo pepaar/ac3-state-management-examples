@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import * as DeleteTodoTypes from "./__generated__/DeleteTodo";
 import { GET_ALL_TODOS } from "../queries/getAllTodos";
 import { GetAllTodos } from "../queries/__generated__/GetAllTodos";
+import { GET_LIST_TODOS } from "../queries/getListTodos";
 
 export const DELETE_TODO = gql`
   mutation DeleteTodo($id: Int!) {
@@ -25,6 +26,7 @@ export const DELETE_TODO = gql`
 export function useDeleteTodo() {
   const [mutate, { data, error }] = useMutation<DeleteTodoTypes.DeleteTodo, DeleteTodoTypes.DeleteTodoVariables>(DELETE_TODO, {
     update(cache, el) {
+      // Updating cache directly
       const deletedId = el.data?.deleteTodo.todo?.id;
       const allTodos = cache.readQuery<GetAllTodos>({ query: GET_ALL_TODOS });
 
@@ -34,9 +36,8 @@ export function useDeleteTodo() {
           todos: allTodos?.todos.filter((t) => t?.id !== deletedId),
         },
       });
-
-      // You could also remove the item from the important list as well
     },
+    refetchQueries: [{ query: GET_LIST_TODOS }], // Triggering re-fetch of important list
   });
 
   return { mutate, data, error };
