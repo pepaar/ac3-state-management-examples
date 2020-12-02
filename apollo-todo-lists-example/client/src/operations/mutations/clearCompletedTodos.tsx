@@ -30,6 +30,7 @@ export function useClearCompletedTodos() {
       });
       const todosToDelete = result?.todos;
 
+      // Optionally evict non-referenced items from the cache.
       todosToDelete?.forEach((todo) => {
         cache.evict({ id: `Todo:${todo?.id}` });
       });

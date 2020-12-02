@@ -28,6 +28,8 @@ export const EDIT_TODO = gql`
 export function useEditTodo() {
   const [mutate, { data, error }] = useMutation<EditTodoTypes.EditTodo, EditTodoTypes.EditTodoVariables>(EDIT_TODO, {
     update: (cache, response) => {
+      // Add to important list if needed
+
       const updatedTodoFromResponse = response.data?.editTodo.todo;
 
       let existingImportantTodos: GetListTodos | null = null;

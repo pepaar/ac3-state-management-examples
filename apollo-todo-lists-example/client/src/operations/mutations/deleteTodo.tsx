@@ -37,7 +37,7 @@ export function useDeleteTodo() {
         },
       });
     },
-    refetchQueries: [{ query: GET_LIST_TODOS }], // Triggering re-fetch of important list
+    refetchQueries: [{ query: GET_LIST_TODOS }], // or triggering re-fetch of important list
   });
 
   return { mutate, data, error };
